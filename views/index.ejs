@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Launch Tracker</title>
+  <link rel="stylesheet" href="https://unpkg.com/@shopify/polaris@4.0.0-rc.4/styles.min.css" />
+  <script src="/scripts/jquery.js"></script>
+  <script>
+  var merchant = <%- JSON.stringify(merchant) %> ; // Original source of truth
+  var tempMerchant = <%- JSON.stringify(merchant) %> ; // Storing changes to the merchant record. Stays temp until saved
+  </script>
+  <script src="/scripts/script.js"></script>
+  <script src="/scripts/engine.js"></script>
+  <script src="/scripts/underscore.js"></script>
+
+</head>
+<!-- Using EJS (https://ejs.co/) for templating and Shopify Polaris (CSS) for styling-->
+
+<body>
+  <div style="--top-bar-background:#00848e; --top-bar-background-lighter:#1d9ba4; --top-bar-color:#f9fafb;">
+    <div class="Polaris-Page Polaris-Page--fullWidth">
+      <div class="Polaris-Page-Header Polaris-Page-Header--hasNavigation Polaris-Page-Header--hasActionMenu">
+        <div class="Polaris-Page-Header__Navigation">
+          <div class="Polaris-Page-Header__BreadcrumbWrapper">
+            <!-- <nav role="navigation"><a class="Polaris-Breadcrumbs__Breadcrumb" href="/products" data-polaris-unstyled="true"><span class="Polaris-Breadcrumbs__ContentWrapper"><span class="Polaris-Breadcrumbs__Icon"><span class="Polaris-Icon"><svg
+                        viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+                        <path d="M12 16a.997.997 0 0 1-.707-.293l-5-5a.999.999 0 0 1 0-1.414l5-5a.999.999 0 1 1 1.414 1.414L8.414 10l4.293 4.293A.999.999 0 0 1 12 16" fill-rule="evenodd"></path>
+                      </svg></span></span><span class="Polaris-Breadcrumbs__Content">Products</span></span></a>
+            </nav> -->
+          </div>
+          <div class="Polaris-Page-Header__PaginationWrapper">
+            <nav class="Polaris-Pagination Polaris-Pagination--plain" aria-label="Pagination"><button type="button" class="Polaris-Pagination__Button Polaris-Pagination__PreviousButton" aria-label="Previous"><span class="Polaris-Icon"><svg
+                    viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+                    <path d="M17 9H5.414l3.293-3.293a.999.999 0 1 0-1.414-1.414l-5 5a.999.999 0 0 0 0 1.414l5 5a.997.997 0 0 0 1.414 0 .999.999 0 0 0 0-1.414L5.414 11H17a1 1 0 1 0 0-2" fill-rule="evenodd"></path>
+                  </svg></span></button><button type="button" class="Polaris-Pagination__Button Polaris-Pagination__NextButton" aria-label="Next"><span class="Polaris-Icon"><svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false"
+                    aria-hidden="true">
+                    <path d="M17.707 9.293l-5-5a.999.999 0 1 0-1.414 1.414L14.586 9H3a1 1 0 1 0 0 2h11.586l-3.293 3.293a.999.999 0 1 0 1.414 1.414l5-5a.999.999 0 0 0 0-1.414" fill-rule="evenodd"></path>
+                  </svg></span></button></nav>
+          </div>
+        </div>
+        <div class="Polaris-Page-Header__MainContent">
+          <div class="Polaris-Page-Header__TitleActionMenuWrapper">
+            <div>
+              <div class="Polaris-Header-Title__TitleAndSubtitleWrapper">
+                <div class="Polaris-Header-Title__TitleWithMetadataWrapper">
+                  <div class="Polaris-Header-Title">
+                    <h1 class="Polaris-DisplayText Polaris-DisplayText--sizeLarge"><%= merchant.merchant_name.value %></h1>
+                  </div>
+                  <!-- Launch Status -->
+                  <div class="Polaris-Header-Title__TitleMetadata"><span class="Polaris-Badge <% if( merchant.case_status.value == 'Open'){ %>Polaris-Badge--statusInfo <% } %>"><span class="Polaris-VisuallyHidden">Attention</span><span
+                        class="Polaris-Badge__Content"><%= merchant.case_status.value %></span></span></div>
+                  <!-- Launch Health -->
+                  <% if (merchant.case_status.health == 'Green') { %>
+                  Polaris-Badge--statusSuccess
+                  <% } else if(merchant.case_status.health == 'Red') { %>
+                  Polaris-Badge--statusWarning
+                  <% } else if(merchant.case_status.health == 'Yellow') { %>
+                  Polaris-Badge--statusAttention
+                  <% } %>
+                  <div class="Polaris-Header-Title__TitleMetadata"><span class="Polaris-Badge <% if (merchant.case_health.value == 'Green') { %>
+                                            Polaris-Badge--statusSuccess
+                                        <% } else if(merchant.case_health.value == 'Red') { %>
+                                            Polaris-Badge--statusWarning
+                                        <% } else if(merchant.case_health.value == 'Yellow') { %>
+                                            Polaris-Badge--statusAttention
+                                        <% } %>"><span class="Polaris-VisuallyHidden">Attention</span><span class="Polaris-Badge__Content"><%= merchant.case_health.value %></span></span></div>
+                </div>
+              </div>
+            </div>
+            <div class="Polaris-Page-Header__ActionMenuWrapper">
+              <div class="Polaris-ActionMenu">
+
+
+              </div>
+            </div>
+          </div>
+          <div class="Polaris-Page-Header__PrimaryActionWrapper"><button type="button" id="save-button" class="Polaris-Button Polaris-Button--primary Polaris-Button--disabled" disabled=""><span class="Polaris-Button__Content"><span
+                  class="Polaris-Button__Text">Save</span></span></button></div>
+        </div>
+        </br>
+        <!-- Tabs -->
+        <div style="--top-bar-background:#00848e; --top-bar-background-lighter:#1d9ba4; --top-bar-color:#f9fafb;">
+          <div class="Polaris-Card">
+            <div>
+              <!-- Tab selection -->
+              <div class="Polaris-Tabs__Wrapper">
+                <ul role="tablist" class="Polaris-Tabs">
+
+                  <!-- Menu Items -->
+                  <li class="Polaris-Tabs__TabContainer">
+                    <button id="menu-summary" role="tab" type="button" tabindex="0" class="Polaris-Tabs__Tab Polaris-Tabs__Tab--selected" aria-selected="true" aria-controls="all-customers-content" aria-label="All customers"><span
+                        class="Polaris-Tabs__Title">Summary</span>
+                    </button>
+                  </li>
+                  <li class="Polaris-Tabs__TabContainer"><button id="menu-migration" role="tab" type="button" tabindex="-1" class="Polaris-Tabs__Tab" aria-selected="false" aria-controls="accepts-marketing-content"><span
+                        class="Polaris-Tabs__Title">Migration</span></button></li>
+                  <li class="Polaris-Tabs__TabContainer"><button id="menu-build" role="tab" type="button" tabindex="-1" class="Polaris-Tabs__Tab" aria-selected="false" aria-controls="repeat-customers-content"><span
+                        class="Polaris-Tabs__Title">Build</span></button></li>
+                  <li class="Polaris-Tabs__TabContainer"><button id="menu-testing" role="tab" type="button" tabindex="-1" class="Polaris-Tabs__Tab" aria-selected="false" aria-controls="prospects-content"><span
+                        class="Polaris-Tabs__Title">Testing</span></button></li>
+                  <li class="Polaris-Tabs__TabContainer"><button id="menu-launch" role="tab" type="button" tabindex="-1" class="Polaris-Tabs__Tab" aria-selected="false" aria-controls="prospects-content"><span
+                        class="Polaris-Tabs__Title">Launch</span></button></li>
+                  <li class="Polaris-Tabs__TabContainer"><button id="menu-postlaunch" role="tab" type="button" tabindex="-1" class="Polaris-Tabs__Tab" aria-selected="false" aria-controls="prospects-content"><span class="Polaris-Tabs__Title">Post
+                        Launch</span></button></li>
+                  <!-- <li class="Polaris-Tabs__TabContainer"><button id="menu-goals" role="tab" type="button" tabindex="-1" class="Polaris-Tabs__Tab" aria-selected="false" aria-controls="prospects-content"><span
+                        class="Polaris-Tabs__Title">Goals</span></button></li> -->
+                  <li class="Polaris-Tabs__DisclosureTab">
+
+                    <div><button type="button" class="Polaris-Tabs__DisclosureActivator" aria-label="More tabs" tabindex="0" aria-controls="Polarispopover6" aria-owns="Polarispopover6" aria-expanded="false"><span class="Polaris-Tabs__Title"><span
+                            class="Polaris-Icon"><svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+                              <path d="M6 10a2 2 0 1 1-4.001-.001A2 2 0 0 1 6 10zm6 0a2 2 0 1 1-4.001-.001A2 2 0 0 1 12 10zm6 0a2 2 0 1 1-4.001-.001A2 2 0 0 1 18 10z" fill-rule="evenodd"></path>
+                            </svg></span></span></button></div>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Each of the below tabs contains the view -->
+              <!-- Summary -->
+              <div class="Polaris-Tabs__Panel" id="tab-summary" role="tabpanel" aria-labelledby="summary" tabindex="-1">
+                <div class="Polaris-Card__Section">
+                  <div class="Polaris-Card__SectionHeader">
+                    <h3 aria-label="All" class="Polaris-Subheading">Information about the merchant and their business</h3>
+                  </div>
+                  <div style="--top-bar-background:#00848e; --top-bar-background-lighter:#1d9ba4; --top-bar-color:#f9fafb;">
+                    <div class="Polaris-Layout">
+                      <div class="Polaris-Layout__Section">
+                        <div class="Polaris-Card">
+                          <div class="Polaris-Card__Header">
+                            <h2 class="Polaris-Heading"></h2>
+                          </div>
+                          <div class="Polaris-Card__Section">
+                            <p>High level overview of the merchant's business.</p></br>
+
+                            <!-- Annotated section -->
+                            <div style="--top-bar-background:#00848e; --top-bar-background-lighter:#1d9ba4; --top-bar-color:#f9fafb;">
+                              <div class="Polaris-Layout">
+                                <div class="Polaris-Layout__AnnotatedSection">
+                                  <div class="Polaris-Layout__AnnotationWrapper">
+                                    <div class="Polaris-Layout__Annotation">
+                                      <div class="Polaris-TextContainer">
+                                        <h2 class="Polaris-Heading">Case details</h2>
+                                        <div class="Polaris-Layout__AnnotationDescription">
+                                          <p>Information about the merchant and the launch case.</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="Polaris-Layout__AnnotationContent">
+                                      <div class="Polaris-Card">
+                                        <div class="Polaris-Card__Section">
+                                          <div class="Polaris-FormLayout">
+                                            <div class="Polaris-FormLayout__Item">
+                                              <div class="">
+                                                <div class="Polaris-Labelled__LabelWrapper">
+                                                  <div class="Polaris-Label"><label id="merchant_name" for="PolarisTextField11" class="Polaris-Label__Text">Store name</label></div>
+                                                </div>
+                                                <div class="Polaris-Connected">
+                                                  <div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+                                                    <div class="Polaris-TextField"><input id="merchant_name" value="<%= merchant.merchant_name.value %>" class="Polaris-TextField__Input" aria-labelledby="PolarisTextField11Label"
+                                                        aria-invalid="false" aria-multiline="false" value="">
+                                                      <div class="Polaris-TextField__Backdrop"></div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+
+                                            <div class="Polaris-FormLayout__Item">
+                                              <div class="">
+                                                <div class="Polaris-Labelled__LabelWrapper">
+
+                                                  <div class="Polaris-Label"><label id="last_updated" for="PolarisTextField11" class="Polaris-Label__Text">Last Updated</label></div>
+                                                </div>
+                                                <div class="Polaris-Connected">
+                                                  <div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+                                                    <div class="Polaris-TextField"><input id="last_updated" class="Polaris-TextField__Input" value="<%= merchant.last_updated.value %>" aria-labelledby="PolarisTextField11Label"
+                                                        aria-invalid="false" aria-multiline="false" value="">
+                                                      <div class="Polaris-TextField__Backdrop"></div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <!-- Case status -->
+                                            <div class="Polaris-FormLayout__Item">
+                                              <div class="">
+                                                <div class="Polaris-Connected">
+                                                  <div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+                                                    <div class="Polaris-Labelled__LabelWrapper">
+                                                      <div class="Polaris-Label"><label id="PolarisSelect2Label" for="PolarisSelect2" class="Polaris-Label__Text">Case Status</label></div>
+                                                    </div>
+                                                    <div class="Polaris-Select"><select id="PolarisSelect2" class="Polaris-Select__Input" aria-invalid="false">
+                                                        <option value="today">Open</option>
+                                                        <option value="yesterday">Handoff</option>
+                                                        <option value="lastWeek">Closed</option>
+                                                      </select>
+                                                      <div class="Polaris-Select__Content" aria-hidden="true"><span class="Polaris-Select__SelectedOption"><%= merchant.case_status.value %></span><span class="Polaris-Select__Icon"><span
+                                                            class="Polaris-Icon"><svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+                                                              <path d="M13 8l-3-3-3 3h6zm-.1 4L10 14.9 7.1 12h5.8z" fill-rule="evenodd"></path>
+                                                            </svg></span></span></div>
+                                                      <div class="Polaris-Select__Backdrop"></div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <!-- Launch Information -->
+                                <div class="Polaris-Layout__AnnotatedSection">
+                                  <div class="Polaris-Layout__AnnotationWrapper">
+                                    <div class="Polaris-Layout__Annotation">
+                                      <div class="Polaris-TextContainer">
+                                        <h2 class="Polaris-Heading">Launch Details</h2>
+                                        <div class="Polaris-Layout__AnnotationDescription">
+                                          <p>Information about the launch</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="Polaris-Layout__AnnotationContent">
+                                      <div class="Polaris-Card">
+                                        <div class="Polaris-Card__Section">
+                                          <div class="Polaris-FormLayout">
+                                            <div class="Polaris-FormLayout__Item">
+                                              <div class="">
+                                                <div class="Polaris-Labelled__LabelWrapper">
+                                                  <div class="Polaris-Label"><label id="expected_launch_date" for="PolarisTextField11" class="Polaris-Label__Text">Expected Launch Date</label></div>
+                                                </div>
+                                                <div class="Polaris-Connected">
+                                                  <div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+                                                    <div class="Polaris-TextField"><input id="expected_launch_date" value="<%= merchant.expected_launch_date.value %>" class="Polaris-TextField__Input" aria-labelledby="PolarisTextField11Label"
+                                                        aria-invalid="false" aria-multiline="false" value="">
+                                                      <div class="Polaris-TextField__Backdrop"></div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+
+                                            <!-- Launch Health -->
+                                            <!-- Launch Health -->
+                                            <div class="Polaris-FormLayout__Item">
+                                              <div class="">
+                                                <div class="Polaris-Connected">
+                                                  <div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+                                                    <div class="Polaris-Labelled__LabelWrapper">
+                                                      <div class="Polaris-Label"><label id="PolarisSelect2Label" for="PolarisSelect2" class="Polaris-Label__Text">Case Status</label></div>
+                                                    </div>
+                                                    <div class="Polaris-Select"><select id="PolarisSelect2" class="Polaris-Select__Input" aria-invalid="false">
+                                                        <option value="today">Red</option>
+                                                        <option value="yesterday">Yellow</option>
+                                                        <option value="lastWeek">Green</option>
+                                                      </select>
+                                                      <div class="Polaris-Select__Content" aria-hidden="true"><span class="Polaris-Select__SelectedOption"><%= merchant.case_health.value %></span><span class="Polaris-Select__Icon"><span
+                                                            class="Polaris-Icon"><svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+                                                              <path d="M13 8l-3-3-3 3h6zm-.1 4L10 14.9 7.1 12h5.8z" fill-rule="evenodd"></path>
+                                                            </svg></span></span></div>
+                                                      <div class="Polaris-Select__Backdrop"></div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+
+                                <!-- Launch Summary sections -->
+                                <% merchant.summary.sections.forEach(function(section, sIndex) { %>
+
+                                <div class="Polaris-Layout__AnnotatedSection">
+                                  <div class="Polaris-Layout__AnnotationWrapper">
+                                    <div class="Polaris-Layout__Annotation">
+                                      <div class="Polaris-TextContainer">
+
+                                        <h2 class="Polaris-Heading"><%= section.section_title %></h2>
+                                        <div class="Polaris-Layout__AnnotationDescription">
+                                          <p><%= section.section_description %></p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="Polaris-Layout__AnnotationContent">
+                                      <div class="Polaris-Card">
+                                        <div class="Polaris-Card__Section">
+                                          <div class="Polaris-FormLayout">
+
+                                            <div class="Polaris-FormLayout__Item">
+                                              <div class="Polaris-Labelled__LabelWrapper">
+                                                <div class="Polaris-Label"><label id="PolarisTextField11Label" for="PolarisTextField11" class="Polaris-Label__Text">
+                                                    <h3 aria-label="All" class="Polaris-Subheading"><%= section.section_title %></h3>
+                                                  </label></div>
+                                              </div>
+                                              <div class="Polaris-Connected">
+                                                <div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+                                                  <% section.fields.forEach(function(field, fIndex) { %>
+                                                  <% switch (field.field_type) {
+                                                                              case 'checkbox' : %>
+                                                  <%- include ('components/checkbox', {"id" : field.id, "title" : field.field_title, "checked" : field  }) %>
+                                                  <% break;
+                                                                              case 'text_input_multi' : %>
+                                                  <%- include ('components/text_input', {"id" : field.id, "title" : field.field_title, "value" : field.value}) %>
+                                                  <% break;
+                                                                              default: %>
+                                                  <%- include ('components/text_input', {"id" : field.id, "title" : field.field_title, "value" : field.value}) %>
+                                                  <% break;
+                                                                              } %>
+                                                  <%  }) %>
+
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <% }) %>
+
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+
+
+
+                      <!-- Launch sidebar infor (agency and contacts) -->
+                      <div class="Polaris-Layout__Section Polaris-Layout__Section--secondary">
+                        <div class="Polaris-Card">
+                          <% if (merchant.summary.partner.has_agency === true) { %>
+                          <div class="Polaris-Card__Header">
+                            <h2 class="Polaris-Heading">Partner</h2>
+                          </div>
+                          <div class="Polaris-Card__Section">
+                            <p>Partner: <%= merchant.summary.partner.name %> </p></br>
+                            <p>Ongoing: <%= merchant.summary.partner.ongoing_after_launch %> </p></br>
+                          </div>
+                          <% } %>
+                          <div class="Polaris-Card__Header">
+                            <h2 class="Polaris-Heading">Contacts</h2>
+                          </div>
+                          <div class="Polaris-Card__Section">
+                            <% merchant.summary.stakeholders.forEach(function(contact) { %>
+                            <%= contact.name %></br>
+                            <%= contact.email %></br></br>
+                            <button type="button" class="Polaris-Button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Add new contact</span></span></button>
+                            <% }) %>
+                          </div>
+                        </div>
+
+                      </div>
+                      <div class="Polaris-Layout__Section Polaris-Layout__Section--secondary">
+                        <div class="Polaris-Card">
+                          <div class="Polaris-Card__Header">
+                            <h2 class="Polaris-Heading">Resources</h2>
+                          </div>
+                          <div class="Polaris-Card__Section" id="summary-resources">
+                            <p>Relevant Resources</p>
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+              <!-- Migration -->
+              <div class="Polaris-Tabs__Panel Polaris-Tabs__Panel--hidden" id="tab-migration" role="tabpanel" aria-labelledby="accepts-marketing" tabindex="-1">
+                <div class="Polaris-Card__Section">
+                  <div class="Polaris-Card__SectionHeader">
+                    <h3 aria-label="All" class="Polaris-Subheading">Testing checklists</h3>
+                  </div>
+                  <div style="--top-bar-background:#00848e; --top-bar-background-lighter:#1d9ba4; --top-bar-color:#f9fafb;">
+                    <div class="Polaris-Layout">
+
+                      <div class="Polaris-Layout__Section">
+                        <div class="Polaris-Card">
+                          <div class="Polaris-Card__Header">
+                          </div>
+                          <div class="Polaris-Card__Section">
+
+                            <!-- Annotated section -->
+                            <div style="--top-bar-background:#00848e; --top-bar-background-lighter:#1d9ba4; --top-bar-color:#f9fafb;">
+                              <div class="Polaris-Layout">
+                                <!-- Section - Migration checklist -->
+                                <div class="Polaris-Layout__AnnotatedSection">
+                                  <div class="Polaris-Layout__AnnotationWrapper">
+                                    <div class="Polaris-Layout__Annotation">
+                                      <div class="Polaris-TextContainer">
+                                        <h2 class="Polaris-Heading">Migration Checklist</h2>
+                                        <div class="Polaris-Layout__AnnotationDescription">
+                                          <p>Items to handle during migration.</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="Polaris-Layout__AnnotationContent">
+                                      <div class="Polaris-Card">
+                                        <div class="Polaris-Card__Section">
+                                          <div class="Polaris-FormLayout">
+
+                                            <!-- Migration checklist -->
+                                            <div class="Polaris-FormLayout__Item">
+                                              <div class="Polaris-Labelled__LabelWrapper">
+                                                <div class="Polaris-Label"><label id="PolarisTextField11Label" for="PolarisTextField11" class="Polaris-Label__Text">
+                                                    <h3 aria-label="All" class="Polaris-Subheading">Checklist</h3>
+                                                  </label></div>
+                                              </div>
+                                              <div class="Polaris-Connected">
+                                                <div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+                                                </div>
+                                              </div>
+
+                                              <% merchant.migration.checklist.forEach(function(c, i) { %>
+                                              <!-- Build checkbox list -->
+                                              <%- include ('components/checkbox', {"id" : c.id, "title" : c.title, "checked" : c.value }) %>
+                                              <% }) %>
+
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <!-- Migration sections -->
+                                <% merchant.migration.sections.forEach(function(section, sIndex) { %>
+
+                                <div class="Polaris-Layout__AnnotatedSection">
+                                  <div class="Polaris-Layout__AnnotationWrapper">
+                                    <div class="Polaris-Layout__Annotation">
+                                      <div class="Polaris-TextContainer">
+
+                                        <h2 class="Polaris-Heading"><%= section.section_title %></h2>
+                                        <div class="Polaris-Layout__AnnotationDescription">
+                                          <p><%= section.section_description %></p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="Polaris-Layout__AnnotationContent">
+                                      <div class="Polaris-Card">
+                                        <div class="Polaris-Card__Section">
+                                          <div class="Polaris-FormLayout">
+
+                                            <div class="Polaris-FormLayout__Item">
+                                              <div class="Polaris-Labelled__LabelWrapper">
+                                                <div class="Polaris-Label"><label id="PolarisTextField11Label" for="PolarisTextField11" class="Polaris-Label__Text">
+                                                    <h3 aria-label="All" class="Polaris-Subheading"><%= section.section_title %></h3>
+                                                  </label></div>
+                                              </div>
+                                              <div class="Polaris-Connected">
+                                                <div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+                                                  <% section.fields.forEach(function(field, fIndex) { %>
+                                                  <% switch (field.field_type) {
+                                                                                      case 'checkbox' : %>
+                                                  <%- include ('components/checkbox', {"id" : field.id, "title" : field.field_title, "checked" : field  }) %>
+                                                  <% break;
+                                                                                      case 'text_input_multi' : %>
+                                                  <%- include ('components/text_input', {"id" : field.id, "title" : field.field_title, "value" : field.value}) %>
+                                                  <% break;
+                                                                                      default: %>
+                                                  <%- include ('components/checkbox', {"id" : field.id, field : "title", "checked" : field  }) %>
+                                                  <% break;
+                                                                                      } %>
+                                                  <%  }) %>
+
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <% }) %>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="Polaris-Layout__Section Polaris-Layout__Section--secondary">
+                        <div class="Polaris-Card">
+                          <div class="Polaris-Card__Header">
+                            <h2 class="Polaris-Heading">Resources</h2>
+                          </div>
+                          <div class="Polaris-Card__Section">
+                            <p>Relevant Resources</p>
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Build -->
+              <div class="Polaris-Tabs__Panel Polaris-Tabs__Panel--hidden" id="tab-build" role="tabpanel" aria-labelledby="accepts-marketing" tabindex="-1">
+                <div class="Polaris-Card__Section">
+                  <div class="Polaris-Card__SectionHeader">
+                    <h3 aria-label="All" class="Polaris-Subheading">Build Checklist</h3>
+                  </div>
+                  <div style="--top-bar-background:#00848e; --top-bar-background-lighter:#1d9ba4; --top-bar-color:#f9fafb;">
+                    <div class="Polaris-Layout">
+                      <div class="Polaris-Layout__Section">
+                        <div class="Polaris-Card">
+                          <div class="Polaris-Card__Header">
+                          </div>
+                          <div class="Polaris-Card__Section">
+
+                            <!-- Annotated section -->
+                            <div style="--top-bar-background:#00848e; --top-bar-background-lighter:#1d9ba4; --top-bar-color:#f9fafb;">
+                              <div class="Polaris-Layout">
+                                <!-- Section - Build checklist -->
+                                <div class="Polaris-Layout__AnnotatedSection">
+                                  <div class="Polaris-Layout__AnnotationWrapper">
+                                    <div class="Polaris-Layout__Annotation">
+                                      <div class="Polaris-TextContainer">
+                                        <h2 class="Polaris-Heading">Build Checklist</h2>
+                                        <div class="Polaris-Layout__AnnotationDescription">
+                                          <p>Items to handle during build.</p>
+
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="Polaris-Layout__AnnotationContent">
+                                      <div class="Polaris-Card">
+                                        <div class="Polaris-Card__Section">
+                                          <div class="Polaris-FormLayout">
+
+                                            <!-- Build checklist -->
+                                            <div class="Polaris-FormLayout__Item">
+                                              <div class="Polaris-Labelled__LabelWrapper">
+                                                <div class="Polaris-Label"><label id="PolarisTextField11Label" for="PolarisTextField11" class="Polaris-Label__Text">
+                                                    <h3 aria-label="All" class="Polaris-Subheading">Checklist</h3>
+                                                  </label></div>
+                                              </div>
+                                              <div class="Polaris-Connected">
+                                                <div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+                                                </div>
+                                              </div>
+
+                                              <% merchant.build.checklist.forEach(function(c, i) { %>
+                                              <!-- Build checkbox list -->
+                                              <%- include ('components/checkbox', {"id" : c.id, "title" : c.title, "checked" : c.value  }) %>
+                                              <% }) %>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <!-- Build sections -->
+                                <% merchant.build.sections.forEach(function(section, sIndex) { %>
+
+                                <div class="Polaris-Layout__AnnotatedSection">
+                                  <div class="Polaris-Layout__AnnotationWrapper">
+                                    <div class="Polaris-Layout__Annotation">
+                                      <div class="Polaris-TextContainer">
+
+                                        <h2 class="Polaris-Heading"><%= section.section_title %></h2>
+                                        <div class="Polaris-Layout__AnnotationDescription">
+                                          <p><%= section.section_description %></p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="Polaris-Layout__AnnotationContent">
+                                      <div class="Polaris-Card">
+                                        <div class="Polaris-Card__Section">
+                                          <div class="Polaris-FormLayout">
+
+                                            <div class="Polaris-FormLayout__Item">
+                                              <div class="Polaris-Labelled__LabelWrapper">
+                                                <div class="Polaris-Label"><label id="PolarisTextField11Label" for="PolarisTextField11" class="Polaris-Label__Text">
+                                                    <h3 aria-label="All" class="Polaris-Subheading"><%= section.section_title %></h3>
+                                                  </label></div>
+                                              </div>
+                                              <div class="Polaris-Connected">
+                                                <div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+                                                  <% section.fields.forEach(function(field, fIndex) { %>
+                                                  <% switch (field.field_type) {
+                                                      case 'checkbox' : %>
+                                                  <%- include ('components/checkbox', {"id" : field.id, "title" : field.field_title, "checked" : field  }) %>
+                                                  <% break;
+                                                      case 'text_input_multi' : %>
+                                                  <%- include ('components/text_input', {"id" : field.id, "title" : field.field_title, "value" : field.value}) %>
+                                                  <% break;
+                                                      default: %>
+                                                  <%- include ('components/checkbox', {"id" :field.id, field : "title", "checked" : field  }) %>
+                                                  <% break;
+                                                      } %>
+                                                  <%  }) %>
+
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <% }) %>
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="Polaris-Layout__Section Polaris-Layout__Section--secondary">
+                        <div class="Polaris-Card">
+                          <div class="Polaris-Card__Header">
+                            <h2 class="Polaris-Heading">Resources</h2>
+                          </div>
+                          <div class="Polaris-Card__Section">
+                            <p>Relevant Resources</p>
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Testing -->
+              <div class="Polaris-Tabs__Panel Polaris-Tabs__Panel--hidden" id="tab-testing" role="tabpanel" aria-labelledby="accepts-marketing" tabindex="-1">
+                <div class="Polaris-Card__Section">
+                  <div class="Polaris-Card__SectionHeader">
+                    <h3 aria-label="All" class="Polaris-Subheading">Testing checklists</h3>
+                  </div>
+                  <div style="--top-bar-background:#00848e; --top-bar-background-lighter:#1d9ba4; --top-bar-color:#f9fafb;">
+                    <div class="Polaris-Layout">
+                      <div class="Polaris-Layout__Section">
+                        <div class="Polaris-Card">
+                          <div class="Polaris-Card__Header">
+                          </div>
+                          <div class="Polaris-Card__Section">
+                            <!-- Annotated section -->
+                            <div style="--top-bar-background:#00848e; --top-bar-background-lighter:#1d9ba4; --top-bar-color:#f9fafb;">
+                              <div class="Polaris-Layout">
+                                <div class="Polaris-Layout__AnnotatedSection">
+                                  <div class="Polaris-Layout__AnnotationWrapper">
+                                    <div class="Polaris-Layout__Annotation">
+                                      <div class="Polaris-TextContainer">
+                                        <h2 class="Polaris-Heading">Testing Checklist</h2>
+                                        <div class="Polaris-Layout__AnnotationDescription">
+                                          <p>Items to check before go live.</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="Polaris-Layout__AnnotationContent">
+                                      <div class="Polaris-Card">
+                                        <div class="Polaris-Card__Section">
+                                          <div class="Polaris-FormLayout">
+
+                                            <div class="Polaris-FormLayout__Item">
+
+
+                                              <div class="Polaris-Labelled__LabelWrapper">
+                                                <div class="Polaris-Label"><label id="PolarisTextField11Label" for="PolarisTextField11" class="Polaris-Label__Text">
+                                                    <h3 aria-label="All" class="Polaris-Subheading">Checklist</h3>
+                                                  </label></div>
+
+                                              </div>
+                                              <div class="Polaris-Connected">
+                                                <div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+
+                                                </div>
+                                              </div>
+
+                                              <% merchant.testing.checklist.forEach(function(c, i) { %>
+                                                <%- include ('components/checkbox', {"id" : c.id , "title" : c.title, "checked" : c.value  }) %>
+
+                                              <% }) %>
+
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                      <div class="Polaris-Layout__Section Polaris-Layout__Section--secondary">
+                        <div class="Polaris-Card">
+                          <div class="Polaris-Card__Header">
+                            <h2 class="Polaris-Heading">Resources</h2>
+                          </div>
+                          <div class="Polaris-Card__Section">
+                            <p>Relevant Resources</p>
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Launch -->
+              <div class="Polaris-Tabs__Panel Polaris-Tabs__Panel--hidden" id="tab-launch" role="tabpanel" aria-labelledby="accepts-marketing" tabindex="-1">
+                <div class="Polaris-Card__Section">
+                  <div class="Polaris-Card__SectionHeader">
+                    <h3 aria-label="All" class="Polaris-Subheading">Items to cover during and leading up to launch</h3>
+                  </div>
+                  <div style="--top-bar-background:#00848e; --top-bar-background-lighter:#1d9ba4; --top-bar-color:#f9fafb;">
+                    <div class="Polaris-Layout">
+                      <div class="Polaris-Layout__Section">
+                        <div class="Polaris-Card">
+                          <div class="Polaris-Card__Header">
+                          </div>
+                          <div class="Polaris-Card__Section">
+
+                            <!-- Annotated section -->
+                            <div style="--top-bar-background:#00848e; --top-bar-background-lighter:#1d9ba4; --top-bar-color:#f9fafb;">
+                              <div class="Polaris-Layout">
+                                <!-- Section - Build checklist -->
+                                <div class="Polaris-Layout__AnnotatedSection">
+                                  <div class="Polaris-Layout__AnnotationWrapper">
+                                    <div class="Polaris-Layout__Annotation">
+                                      <div class="Polaris-TextContainer">
+                                        <h2 class="Polaris-Heading">Launch Checklist</h2>
+                                        <div class="Polaris-Layout__AnnotationDescription">
+                                          <p>Items to handle during build.</p>
+
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="Polaris-Layout__AnnotationContent">
+                                      <div class="Polaris-Card">
+                                        <div class="Polaris-Card__Section">
+                                          <div class="Polaris-FormLayout">
+
+                                            <!-- Build checklist -->
+                                            <div class="Polaris-FormLayout__Item">
+                                              <div class="Polaris-Labelled__LabelWrapper">
+                                                <div class="Polaris-Label"><label id="PolarisTextField11Label" for="PolarisTextField11" class="Polaris-Label__Text">
+                                                    <h3 aria-label="All" class="Polaris-Subheading">Checklist</h3>
+                                                  </label></div>
+                                              </div>
+                                              <div class="Polaris-Connected">
+                                                <div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+                                                </div>
+                                              </div>
+
+                                              <% merchant.launch.checklist.forEach(function(c, i) { %>
+                                              <!-- Build checkbox list -->
+                                              <%- include ('components/checkbox', {"id" : c.id , "title" : c.title, "checked" : c.value  }) %>
+                                              <% }) %>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <!-- Build sections -->
+                                <% merchant.launch.sections.forEach(function(section, sIndex) { %>
+
+                                <div class="Polaris-Layout__AnnotatedSection">
+                                  <div class="Polaris-Layout__AnnotationWrapper">
+                                    <div class="Polaris-Layout__Annotation">
+                                      <div class="Polaris-TextContainer">
+
+                                        <h2 class="Polaris-Heading"><%= section.section_title %></h2>
+                                        <div class="Polaris-Layout__AnnotationDescription">
+                                          <p><%= section.section_description %></p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="Polaris-Layout__AnnotationContent">
+                                      <div class="Polaris-Card">
+                                        <div class="Polaris-Card__Section">
+                                          <div class="Polaris-FormLayout">
+
+                                            <div class="Polaris-FormLayout__Item">
+                                              <div class="Polaris-Labelled__LabelWrapper">
+                                                <div class="Polaris-Label"><label id="PolarisTextField11Label" for="PolarisTextField11" class="Polaris-Label__Text">
+                                                    <h3 aria-label="All" class="Polaris-Subheading"><%= section.section_title %></h3>
+                                                  </label></div>
+                                              </div>
+                                              <div class="Polaris-Connected">
+                                                <div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+                                                  <% section.fields.forEach(function(field, fIndex) { %>
+                                                  <% switch (field.field_type) {
+                                                      case 'checkbox' : %>
+                                                  <%- include ('components/checkbox', {"id" : field.id , "title" : field.field_title, "checked" : field  }) %>
+                                                  <% break;
+                                                      case 'text_input_multi' : %>
+                                                  <%- include ('components/text_input', {"id" : field.id, "title" : field.field_title, "value" : field.value}) %>
+                                                  <% break;
+                                                      default: %>
+                                                  <%- include ('components/checkbox', {"id" : field.id , field : "title", "checked" : field  }) %>
+                                                  <% break;
+                                                      } %>
+                                                  <%  }) %>
+
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <% }) %>
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="Polaris-Layout__Section Polaris-Layout__Section--secondary">
+                        <div class="Polaris-Card">
+                          <div class="Polaris-Card__Header">
+                            <h2 class="Polaris-Heading">Resources</h2>
+                          </div>
+                          <div class="Polaris-Card__Section">
+                            <p>Relevant Resources</p>
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Post-Launch -->
+              <div class="Polaris-Tabs__Panel Polaris-Tabs__Panel--hidden" id="tab-postlaunch" role="tabpanel" aria-labelledby="accepts-marketing" tabindex="-1">
+                <div class="Polaris-Card__Section">
+                  <div class="Polaris-Card__SectionHeader">
+                    <h3 aria-label="All" class="Polaris-Subheading">Post-launch Actions and Goals</h3>
+                  </div>
+                  <div style="--top-bar-background:#00848e; --top-bar-background-lighter:#1d9ba4; --top-bar-color:#f9fafb;">
+                    <div class="Polaris-Layout">
+                      <div class="Polaris-Layout__Section">
+                        <div class="Polaris-Card">
+                          <div class="Polaris-Card__Header">
+                          </div>
+                          <div class="Polaris-Card__Section">
+
+                            <!-- Annotated section -->
+                            <div style="--top-bar-background:#00848e; --top-bar-background-lighter:#1d9ba4; --top-bar-color:#f9fafb;">
+                              <div class="Polaris-Layout">
+                                <!-- Section - Post launch checklist -->
+                                <div class="Polaris-Layout__AnnotatedSection">
+                                  <div class="Polaris-Layout__AnnotationWrapper">
+                                    <div class="Polaris-Layout__Annotation">
+                                      <div class="Polaris-TextContainer">
+                                        <h2 class="Polaris-Heading">Post Launch Checklist</h2>
+                                        <div class="Polaris-Layout__AnnotationDescription">
+                                          <p>Post launch</p>
+
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="Polaris-Layout__AnnotationContent">
+                                      <div class="Polaris-Card">
+                                        <div class="Polaris-Card__Section">
+                                          <div class="Polaris-FormLayout">
+
+                                            <!-- Build checklist -->
+                                            <div class="Polaris-FormLayout__Item">
+                                              <div class="Polaris-Labelled__LabelWrapper">
+                                                <div class="Polaris-Label"><label id="PolarisTextField11Label" for="PolarisTextField11" class="Polaris-Label__Text">
+                                                    <h3 aria-label="All" class="Polaris-Subheading">Checklist</h3>
+                                                  </label></div>
+                                              </div>
+                                              <div class="Polaris-Connected">
+                                                <div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+                                                </div>
+                                              </div>
+
+                                              <% merchant.post_launch.checklist.forEach(function(c, i) { %>
+                                              <!-- Build checkbox list -->
+                                              <%- include ('components/checkbox', {"id" : c.id , "title" : c.title, "checked" : c.value  }) %>
+                                              <% }) %>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <!-- Build sections -->
+                                <% merchant.post_launch.sections.forEach(function(section, sIndex) { %>
+
+                                <div class="Polaris-Layout__AnnotatedSection">
+                                  <div class="Polaris-Layout__AnnotationWrapper">
+                                    <div class="Polaris-Layout__Annotation">
+                                      <div class="Polaris-TextContainer">
+
+                                        <h2 class="Polaris-Heading"><%= section.section_title %></h2>
+                                        <div class="Polaris-Layout__AnnotationDescription">
+                                          <p><%= section.section_description %></p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="Polaris-Layout__AnnotationContent">
+                                      <div class="Polaris-Card">
+                                        <div class="Polaris-Card__Section">
+                                          <div class="Polaris-FormLayout">
+
+                                            <div class="Polaris-FormLayout__Item">
+                                              <div class="Polaris-Labelled__LabelWrapper">
+                                                <div class="Polaris-Label"><label id="PolarisTextField11Label" for="PolarisTextField11" class="Polaris-Label__Text">
+                                                    <h3 aria-label="All" class="Polaris-Subheading"><%= section.section_title %></h3>
+                                                  </label></div>
+                                              </div>
+                                              <div class="Polaris-Connected">
+                                                <div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+                                                  <% section.fields.forEach(function(field, fIndex) { %>
+                                                  <% switch (field.field_type) {
+                                                      case 'checkbox' : %>
+                                                  <%- include ('components/checkbox', {"id" : field.id, "title" : field.field_title, "checked" : field  }) %>
+                                                  <% break;
+                                                      case 'text_input_multi' : %>
+                                                  <%- include ('components/text_input', {"id" : field.id, "title" : field.field_title, "value" : field.value}) %>
+                                                  <% break;
+                                                      default: %>
+                                                  <%- include ('components/checkbox', {"id" : field.id  + fIndex + "label", field : "title", "checked" : field  }) %>
+                                                  <% break;
+                                                      } %>
+                                                  <%  }) %>
+
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <% }) %>
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="Polaris-Layout__Section Polaris-Layout__Section--secondary">
+                        <div class="Polaris-Card">
+                          <div class="Polaris-Card__Header">
+                            <h2 class="Polaris-Heading">Resources</h2>
+                          </div>
+                          <div class="Polaris-Card__Section">
+                            <p>Relevant Resources</p>
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Post Launch -->
+              <div class="Polaris-Tabs__Panel Polaris-Tabs__Panel--hidden" id="tab-postlaunch" role="tabpanel" aria-labelledby="accepts-marketing" tabindex="-1"></div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="Polaris-Page__Content">
+        <!-- Page content -->
+
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

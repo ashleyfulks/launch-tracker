@@ -1,0 +1,257 @@
+{
+  "user": {"title" : "User", "value" : "Josh Bitossi"},
+  "case_status": {"title" : "Case Status", "value" : "Open"},
+  "case_health": {"title" : "Case Health", "value" : "Yellow"},
+  "merchant_name": {"title" : "Merchant Name", "value" : "Bitossi Wholesale Test Store"},
+  "last_updated": {"title" : "Last Updated", "value" : "01/01/2020"},
+  "business_summary": {
+    "annual_revenue" : {"title" : "Annual Revenue", "value" : 100000},
+    "timezone_region": {"title" : "Region / Timezone", "value" : "Brisbane/Australia"},
+    "offline_revenue" : {"title" : "Offline Revenue", "value" : "0"},
+    "retail_locations" : {"title" : "Retail Locations", "value" : "2"},
+    "regions_current_selling" : {"title" : "Regions Selling To:", "value" : ["Australia", "New Zealand"]},
+    "regions_planning_to_sell_to" : {"title" : "", "value" : ["Australia", "United States", "New Zealand"]},
+    "reasons_for_plus" : {"title" : "Reasons for Plus", "value" : "Flow, Checkout, Rates"},
+    "previous_platform" : {"title" : "Previous Platform", "value" : "Magento"},
+    "segmentation" : {
+      "headless" : {"title" : "Headless", "value" : "false"},
+      "flash" : {"title" : "Flash Seller", "value" : "false"},
+      "large_merchant" : {"title" : "Large Merchant", "value" : "false"}
+    },
+    "industry" : {"title" : "Industry", "value" : "fashion"},
+    "stakeholders" : [
+        {
+          "primary" : false,
+          "name" : "Josh",
+          "email" : "joshua.bitossi@gmail.com",
+          "company" : "",
+          "phone" : "",
+          "role" : ""
+        }
+    ],
+    "partner": {
+      "has_agency": true,
+      "name" : "Great Agency",
+      "ongoing_after_launch": false,
+      "internal_developers": "false",
+      "comments": ""
+    },
+    "techstack" : {
+      "erp" : {"label": "ERP", "value" : "Unknown"},
+      "wip" : {"label": "WIP / WMS", "value" : "Unknown"},
+      "pim" : {"label": "PIM", "value" : "Unknown"},
+      "ims" : {"label": "IMS / OMS", "value" : "Unknown"},
+      "email_marketing" : {"label": "email_marketing", "value" : "Klaviyo"},
+      "loyalty" : {"label": "loyalty", "value" : "Unknown"},
+      "finance_accounting" : {"label": "Finance / Accounting", "value" : "Unknown"},
+      "retail" : {"label": "Retail", "value" : "Unknown"},
+      "other" : {"label": "Other", "value" : "Unknown"}
+    },
+    "comments" : {"title" : "Comments", "value" : "Other comments about the merchant"}
+  },
+  "launch_information": {
+    "expected_launch_date": {"title" : "Expected Launch Date", "value" : "01/01/2020"},
+    "launch health": {"title" : "Launch Health", "value" : "Green"},
+    "launch_milestones" : [
+      {
+        "milestone_name" : {"title" : "Milestone Name", "value" : "Installed Shopify Payments"},
+        "milestone_date" : {"title" : "Milestone Date", "value" : "01/01/2020"}
+      }
+    ]
+  },
+  "platform_adoption": {
+    "flow": {"title" : "Shopify Flow", "value": false, "comments" : ""},
+    "scripts": {"title" : "Shopify Scripts", "value": true, "comments" : ""},
+    "multipass":  {"title" : "Multipass", "value": false, "comments" : ""},
+    "transporter" : {"title" : "Transporter", "value": false, "comments" : ""},
+    "bulk_account_inviter" :  {"title" : "Bulk Account Inviter", "value": true, "comments" : ""},
+    "wholesale" :  {"title" : "Wholesale Channel", "value": true, "comments" : ""},
+    "increase_api_calls" :  {"title" : "Increased API Calls", "value": false, "comments" : ""}
+  },
+  "migration": {
+    "migration_complete" : {"title" : "Migration Complete" , "value": true, "comments" : ""},
+    "entities" : [
+      {"id" : "products", "title" : "Products", "value": "123","comments" : ""},
+      {"id" : "reviews", "title" : "Reviews", "value": "123", "comments" : ""},
+      {"id" : "customers", "title" : "Customers", "value": "123", "comments" : ""},
+      {"id" : "orders", "title" : "Orders", "value": "123", "comments" : ""},
+      {"id" : "gift_vouchers", "title" : "Gift Vouchers", "value": "123", "comments" : ""},
+      {"id" : "discounts", "title" : "Discounts", "value": "123", "comments" : ""},
+      {"id" : "blogs", "title" : "Blogs", "value": "123", "comments" : ""},
+      {"id" : "pages", "title" : "Pages", "value": "123", "comments" : ""},
+      {"id" : "metadata", "title" : "Metadata", "value": "123", "comments" : ""},
+      {"id" : "redirects", "title" : "Redirects", "value": "123", "comments" : ""}
+    ],
+    "checklist" : [
+      {"id" : "products", "title" : "Products Imported", "value" : true},
+      {"id" : "reviews", "title" : "Reviews Imported", "value": false},
+      {"id" : "customers", "title" : "Customers Imported", "value" : false},
+      {"id" : "orders", "title" : "Orders Imported", "value" : true},
+      {"id" : "gift_vouchers", "title" : "Gift Vouchers Imported", "value": false},
+      {"id" : "discounts", "title" : "Discounts Imported", "value": false},
+      {"id" : "blogs", "title" : "Blogs Imported", "value": false},
+      {"id" : "pages", "title" : "Pages Imported", "value": true},
+      {"id" : "metadata", "title" : "Metadata Imported", "value": false},
+      {"id" : "settings", "title" : "Settings Imported", "value" : false},
+      {"id" : "redirects", "title" : "Redirects Imported", "value" : false}
+    ]
+  },
+  "build": {
+    "sections" :[
+        {
+          "section_id" : "theme",
+          "section_title" :"Theme",
+          "section_description" : "Customisations happening to the theme",
+          "fields" : [
+            {"field_title" : "Theme Details", "field_type": "text_input_multi", "value" : ""}
+          ]
+        },
+        {
+          "section_id" : "products",
+          "section_title" :"Products",
+          "section_description" : "Product customisations",
+          "fields" : [
+            {"field_id" : " bundling", "field_title" : "Bundling", "field_description" : "Are you bundling products?", "field_type": "checkbox", "value" : ""},
+            {"field_id" : " upsells", "field_title" : "Upsells", "field_description" : "Are you upselling products?", "field_type": "checkbox", "value" : ""},
+            {"field_id" : " additional_information", "field_title" : "Additional Information", "field_description" : "Do products require additional information capture?", "field_type": "checkbox", "value" : ""},
+            {"field_id" : " customisation", "field_title" : "Customisation", "field_description" : "Do your products require customisation?", "field_type": "text_input_multi", "value" : ""},
+            {"field_id" : " regional_pricing", "field_title" : "Regional Pricing", "field_description" : "Do your products have regional pricing?", "field_type": "checkbox", "value" : ""},
+            {"field_id" : " comments", "field_title" : "Additional comments", "field_description" : "Any other comments?", "field_type": "checkbox", "value" : ""}
+
+          ]
+        },
+        {
+          "section_id" : "orders",
+          "section_title" :"Orders",
+          "section_description" : "Order information",
+          "fields" : [
+            {"field_id" : " preordering", "field_title" : "Preordering", "field_description" : "Can customer's preorder products?", "field_type": "checkbox", "value" : ""},
+            {"field_id" : " susbcriptions", "field_title" : "Upsells", "field_description" : "Do you offer subscriptions?", "field_type": "checkbox", "value" : ""}
+          ]
+        },
+        {
+          "section_id" : "checkout",
+          "section_title" :"Checkout",
+          "section_description" : "Checkout details and customisation",
+          "fields" : [
+            {"field_id" : " third_party_gateways", "field_title" : "Offsite gateways", "field_description" : "Are you using offsite gateways?", "field_type": "checkbox", "value" : ""}
+          ]
+        },
+        {
+          "section_id" : "taxes",
+          "section_title" :"Taxes",
+          "section_description" : "Taxes",
+          "fields" : [
+            {"field_id" : " avalara", "field_title" : "Avalara", "field_description" : "Do you require Avalara", "field_type": "checkbox", "value" : ""}
+          ]
+        },
+        {
+          "section_id" : "shipping",
+          "section_title" :"Shipping",
+          "section_description" : "Shipping customisations",
+          "fields" : [
+            {"field_id" : " click_and_collect", "field_title" : "Click and Collect", "field_description" : "re you implementing click and collect?", "field_type": "checkbox", "value" : ""},
+            {"field_id" : " carrier_service", "field_title" : "Offsite gateways", "field_description" : "Are you implementing click and collect?", "field_type": "checkbox", "value" : ""},
+            {"field_id" : " apps", "field_title" : "Offsite gateways", "field_description" : "Are you using an app for your shipping", "field_type": "checkbox", "value" : ""},
+            {"field_id" : " comments", "field_title" : "Offsite gateways", "field_description" : "Other comments for shipping?", "field_type": "checkbox", "value" : ""}
+          ]
+        },
+        {
+          "section_id" : "fulfillment",
+          "section_title" :"Fulfilment",
+          "section_description" : "Fulfilment details",
+          "fields" : [
+            {"field_id" : " apps", "field_title" : "Shipping Apps", "field_description" : "", "field_type": "checkbox", "value" : ""},
+            {"field_id" : " comments", "field_title" : "Offsite gateways", "field_description" : "Other comments for shipping", "field_type": "checkbox", "value" : ""}
+          ]
+        },
+        {
+          "section_id" : "integrations",
+          "section_title" :"Integrations",
+          "section_description" : "Integration details",
+          "fields" : [
+            {"field_id" : " store_sync", "field_title" : "Store Sync", "field_description" : "Are you syncing information between sites", "field_type": "checkbox", "value" : ""},
+            {"field_id" : "ERP", "field_title": "ERP", "field_description" : "Are you syncing information with an ERP?", "value" : false, "field_type": "checkbox", "comments" : ""},
+            {"field_id" :     "WIP/WMS", "field_title": "WIP/WMS", "field_description" : "Are you syncing information between sites?","field_type": "checkbox", "value" : false, "comments" : ""},
+            {"field_id" :   "PIM", "field_title": "PIM",  "field_description": "Are you syncing information between sites?", "value" : false,"field_type": "checkbox", "comments" : ""},
+            {"field_id" :   "IMS/OMS", "field_title": "IMS/OMS", "field_description" : "Are you syncing information between sites?", "value" : false, "field_type": "checkbox","comments" : ""},
+            {"field_id" :   "email_marketing", "field_title": "Email Marketing", "field_description" : "Are you syncing information between sites?","field_type": "checkbox", "value" : false, "comments" : ""},
+            {"field_id" :   "loyalty", "field_title": "Loyalty", "field_description" : "Are you syncing information between sites?", "value" : false,"field_type": "checkbox", "comments" : ""},
+            {"field_id" :   "finance_accounting", "field_title": "Finance / Accounting", "field_description" : "Are you syncing information between sites?","field_type": "checkbox", "value" : false, "comments" : ""},
+            {"field_id" :   "retail", "field_title": "Retail", "field_description" : "Are you syncing information between sites?","field_type": "checkbox", "value" : false, "comments" : ""},
+            {"field_id" :   "other", "field_title": "Other", "field_description" : "Are you syncing information between sites?", "field_type": "checkbox", "value" : false, "comments" : ""}
+        ]
+        }
+      ],
+    "checklist" : [
+      {"id" : "theme", "title" : "Theme design complete", "value" : true},
+      {"id" : "taxes", "title" : "Taxes have been configured", "value" : false},
+      {"id" : "shipping", "title" : "Shipping settings configured", "value" : false},
+      {"id" : "payments", "title" : "Payments are configured", "value" : false},
+      {"id" : "payment_verification", "title" : "Payment verification is provided", "value" : false},
+      {"id" : "integrations", "title" : "Integrations are complete", "value" : false}
+    ]
+  },
+  "testing": {
+    "checklist" : [
+      {"id" : "payment_gateyway", "title" : "Payment Gateway Tested", "value" : false},
+      {"id" : "test_order", "title" : "Test order has been complete", "value" : true},
+      {"id" : "shipping_origin" , "title" : "Shipping origin address has been reviewed", "value" : false},
+      {"id" : "shipping_rates" , "title" : "Shipping rates have been reviewed", "value" : false},
+      {"id" : "tax_rates" , "title" : "Tax rates have been reviewed", "value" : true},
+      {"id" : "redirects" , "title" : "Redirects are working", "value" : false},
+      {"id" :  "navigation" , "title" : "Navigation links are working properly", "value" : false},
+      {"id" :  "mobile" , "title" : "Tested on mobile", "value" : false},
+      {"id" :  "notifications" , "title" : "Notifications have been tested and edited to be on brand", "value" : false}
+    ],
+    "comments" : {"title" : "comments", "value" : false}
+  },
+  "pre_launch": {
+    "checklist": [
+      {"id" : "dns_access_confirmed", "title" : "DNS Access Confirmed", "value" : false},
+      {"id" : "ssl_preprovisioned", "title" : "SSL Preprovisioned", "value" : true},
+      {"id" : "launch_checklist_sent" , "title" : "Launch checklist sent", "value" : false},
+      {"id" : "customer_account_activation_strategy" , "title" : "Customer Account Activation Strategy", "value" : false},
+      {"id" : "404_monitoring_tool" , "title" : "Monitoring Tool in place", "value" : true},
+      {"id" : "payment_gateway_enabled" , "title" : "Payment Gateway Enabled", "value" : false}
+    ]
+  },
+  "launch" : {
+    "sections" :[
+        {
+          "section_id" : "go_live",
+          "section_title" :"Go live strategies",
+          "section_description" : "Discussions around go live",
+          "fields" : [
+            {"field_title" : "Strategies", "field_type": "text_input_multi", "value" : ""}
+          ]
+        }
+      ],
+    "checklist" : [
+      {"id" : "ev_cert_notified" , "title" : "GlobalSign Notified", "value" : false}
+    ]
+  },
+  "post_launch" : {
+    "sections" :[
+        {
+          "section_id" : "goals",
+          "section_title" :"Goals",
+          "section_description" : "Merchant goals",
+          "fields" : [
+            {"field_title" : "Goals", "field_type": "text_input_multi", "value" : ""}
+          ]
+        },
+        {
+          "section_id" : "sales_goals",
+          "section_title" :"Sales Goals",
+          "section_description" : "Sales Targets",
+          "fields" : [
+            {"field_title" : "Sales Goals", "field_type": "text_input_multi", "value" : ""}
+          ]
+        }
+      ],
+      "checklist" : [
+        {"id" : "ev_cert_notified" , "title" : "Case study", "value" : false}
+      ]
+  }
+}
